@@ -13,7 +13,8 @@
   "author": "Brent Jackson",
   "license": "MIT",
   "devDependencies": {
-    "mdx-deck": "^1.6.7"
+    "mdx-deck": "^1.6.7",
+    "source-map-loader": "^0.2.4"
   },
   "name": "testDeck"
 }
