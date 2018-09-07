@@ -2,11 +2,11 @@ import theme from 'mdx-deck/themes'
 
 export default {
   ...theme,
-
-  // Customize your presentation theme here.
-  //
-  // Read the docs for more info:
-  // https://github.com/jxnblk/mdx-deck/blob/master/docs/theming.md
-  // https://github.com/jxnblk/mdx-deck/blob/master/docs/themes.md
-
-}
+  font: '"Source Sans Pro", "Open Sans", Helvetica, Arial',
+  colors: {
+    text: '#707372',
+    heading: '#e35205',
+    background: '#fff',
+    link: 'f000',
+  }
+};
