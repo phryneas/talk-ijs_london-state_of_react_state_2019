@@ -1,76 +1,173 @@
-import { Head, Notes, Image, Appear, components as C } from 'mdx-deck'
-import { Split } from 'mdx-deck/layouts'
-import { CodeSurfer } from "mdx-deck-code-surfer"
+import { Head, Notes, Image, Appear, components as C } from "mdx-deck";
+import { CodeSurfer } from "mdx-deck-code-surfer";
 
-export { default as theme } from './theme'
+export { default as theme } from "./theme";
+export { components } from "mdx-deck-code-surfer";
 
 <Head>
-  <title>Presentation Title Something Something</title>
+  <title>Async Generators</title>
 </Head>
 
-
-
-<Image src="./assets/mayflower_segel_transparent.png" size="contain" />
+# JavaScript Generators
 
 ---
 
-# Agenda
-
-* About me
-* Something on the topic
-* Questions & Discussion
-* Shameless Plug
+```typescript JavaScript Generators
+function* agenda() {
+  yield "obligatory introduction";
+  yield "new syntax";
+  yield "basics";
+  yield "asynchronous behaviour";
+  yield "flow control from the caller side";
+  yield "generator use-case: early implementation of async/await";
+  yield "generator use-case: sagas";
+}
+```
 
 ---
 
 # About me
 
 <C.ul>
-  <C.li>I am human</C.li>
-  <C.li>born after the invention of the personal computer</C.li>
-  <C.li>but before the internet became popular</C.li>
-  <C.li>to buy food and have fun, I work at <img src="./assets/mayflower_logo_transparent.png" style={{ height: '1.3em', verticalAlign: 'bottom', position: 'relative', top: '5px', left: '-5px' }} /></C.li>
+  <C.li>
+    Lenz Weber (<em>@phry</em> on Twitter, <em>phryneas</em> everywhere else)
+  </C.li>
+  <C.li>
+    Developer at
+    <img
+      src="./assets/mayflower_logo_transparent.png"
+      lang="typescript"
+      style={{
+        height: "1.3em",
+        verticalAlign: "bottom",
+        position: "relative",
+        top: "5px",
+        left: "-5px"
+      }}
+    />
+  </C.li>
+  <C.li>Working in professional web development since 15 years</C.li>
+  <C.li>In love with the Web, Open Source, Linux and Security</C.li>
+  <C.li>Just getting used to conference speaking, so bear with me</C.li>
 </C.ul>
 
 ---
 
-## Edit this file
-
-To create your presentation
-
-<C.ul>
-  <Appear>
-    <C.li>do stuff</C.li>
-    <C.li>add more stuff</C.li>
-  </Appear>
-</C.ul>
-
-
-<Notes>
-* Create speaker notes in fenced code blocks
-</Notes>
-
+# Let's get to know Generators
 
 ---
 
-<CodeSurfer
-  title="Scale and Scroll"
-  notes="Long snippets are scaled ⬇️"
-  code={require("!raw-loader!./snippets/example.jsx")}
-  showNumbers
-  steps={[
-    { range: [1, 3], notes: "⬇️" },
-    { range: [5, 13], notes: "⬇️" },
-    { range: [15, 32], notes: "⬇️" },
-    { lines: [30, 35], notes: "⬇️" },
-    { tokens: { 5: [2, 6], 6: [3] }, notes: "⬇️" },
-    { range: [15, 32], lines: [40], notes: "➡️" }
-  ]}
-/>
+```typescript Syntax Basics
+function* myFirstGenerator() {
+  yield "some-return-value";
+  yield "another-return-value";
+}
+
+const myGeneratorInstance = myFirstGenerator();
+----
+*
+1[1] > the asterisk marks a function as Generator Function
+2[1],3[1] > use yield multiple times to return multiple values
+6[5:7] > call like a function to get your Generator Object
+```
 
 ---
 
-# Questions & Discussion
+```typescript Usage Basics: the for-of-loop
+function* myFirstGenerator() {
+  yield "some-return-value";
+  yield "another-return-value";
+}
+
+for (const value of myFirstGenerator()) {
+  console.log(value);
+}
+```
+
+---
+
+```typescript Usage Basics: using the Iterable protocol
+function* myFirstGenerator() {
+  yield "some-return-value";
+  yield "another-return-value";
+}
+
+const iterableObject = myFirstGenerator();
+
+let nextValue = iterableObject.next();
+while (!nextValue.done) {
+  console.log(nextValue.value);
+
+  nextValue = iterableObject.next();
+}
+```
+
+---
+
+```typescript Asynchronous Behaviour: yield steps out of the Generator
+function* myFirstGenerator() {
+  console.log("generator started");
+
+  console.log("yielding first value");
+  yield "some-return-value";
+  console.log("yielding second value");
+  yield "another-return-value";
+  console.log("generator ends");
+}
+
+let nextValue;
+const iterableObject = myFirstGenerator();
+console.log("generator created");
+console.log("calling first next()");
+nextValue = iterableObject.next();
+console.log("got first return value", nextValue);
+console.log("calling second next()");
+nextValue = iterableObject.next();
+console.log("got second return value", nextValue);
+console.log("calling third next()");
+nextValue = iterableObject.next();
+console.log("got third value", nextValue);
+----
+*
+12 > // calling myFirstGenerator()
+13 > generator created
+14,15 > calling first next()
+2 > generator started
+4,5 > yielding first value
+16 > got first return value { done: false, value: "yielding first value" }
+17,18 > got second next()
+6,7 > yielding second value
+19 > got second return value { done: false, value: "yielding second value" }
+20,21 > calling third next()
+8 > generator ends
+22 > got third value { done: true, value: undefined }
+```
+
+---
+
+```typescript Flow Control from the Caller: throwing an Exception into a Generator
+```
+
+---
+
+```typescript Flow Control from the Caller: forcing a Generator to return
+```
+
+---
+
+# Let's look at real-world use cases
+
+---
+
+```typescript Generator use-case: early implementation of async/await
+```
+
+---
+
+```typescript Generator use-case: sagas
+```
+
+# Time for Questions & Discussion
 
 ---
 
@@ -78,6 +175,9 @@ To create your presentation
 
 # We are hiring!
 
-<img src="./assets/mayflower_logo_transparent.png" style={{maxWidth: "50%"}}/>
+<img
+  src="./assets/mayflower_logo_transparent.png"
+  style={{ maxWidth: "50%" }}
+/>
 
 (talk to me)
