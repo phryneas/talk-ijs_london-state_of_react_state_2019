@@ -298,8 +298,6 @@ for (const fib of iterableFib) {
 
 # Some nuances we skipped over
 
-(you'll probably never ever need those)
-
 - you can also `return` from a Generator Function instead of `yield`ing <br/> (the next call to `next` will return `{done: true, value: 'your-return-value'}`)
 - you can override the return value that is forced by `myIterator.return("forced-return-value")` <br/> by returning something different in your `finally` block
 
@@ -307,15 +305,156 @@ for (const fib of iterableFib) {
 
 # Let's look at real-world use cases
 
+## Use Case: simulating async-await-like behaviour
+
 ---
 
-```typescript Generator use-case: early implementation of async/await
+```typescript what is async-await?
+// before async/await
+function fetchMovieTitles() {
+  return fetch("http://example.com/movies.json")
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(json) {
+      return json.map(movie => movie.title);
+    });
+}
+const movieTitlePromise = fetchMovieTitles();
+
+// with async await
+async function fetchMovieTitles() {
+  const response = await fetch("http://example.com/movies.json");
+  const json = await response.json();
+  return json.map(movie => movie.title);
+}
+const movieTitlePromise = fetchMovieTitles();
 ```
 
 ---
 
-```typescript Generator use-case: sagas
+- async-await was part of ES2017 <br/> landed in Chrome 55, Firefox 52, Edge 15 (2016/2017)
+- generators were already part of ES2015 <br/> available since Chrome 39, Firefox 26, Edge 13 (2013-2015)
+- in the meantime, people got creative
+- so what did that look like?
+
+---
+
+```typescript How we want to use it
+// with async await
+async function fetchMovieTitles() {
+  const response = await fetch("https://example.com/movies.json");
+  const json = await response.json();
+  return json.map(movie => movie.title);
+}
+const movieTitlePromise = fetchMovieTitles();
+
+// with our solution
+function* fetchMovieTitles() {
+  const response = yield fetch("https://example.com/movies.json");
+  const json = yield response.json();
+  return json.map(movie => movie.title);
+}
+
+const movieTitlePromise = runAsync(fetchMovieTitles());
+
+function runAsync(generator) {
+  function run(arg) {
+    const nextValue = generator.next(arg);
+
+    if (nextValue.done) {
+      return nextValue.value;
+    }
+    return Promise.resolve(nextValue.value).then(run);
+  }
+
+  return run();
+}
+----
+1:7
+9:16
+18:29
 ```
+
+---
+
+# Let's look at real-world use cases
+
+## Use Case: Sagas
+
+---
+
+# Sagas
+
+- are triggered from asynchronous actions
+- call "Effects" in sequence
+- an Effect is the description of how a synchronous or asynchronous action should be executed <br/> (other sagas can be called using Effects, too!)
+- the real execution of Effects is done by the runtime
+- can be cancelled from the outside <br/> (for example if we want a saga to run only once, but a newer asynchronous actions re-starts the saga)
+- can "clean up" after themselves if they are cancelled
+
+#### Note: Sagas are available for many different platforms, we will look at redux-saga here
+
+---
+
+```typescript Saga example: AutoComplete in redux-saga
+import { takeLatest, put, call, race, cancelled,delay } from "redux-saga/effects";
+
+const api = "//api.example.com/";
+
+export default function* autoCompleteSaga() {
+  yield takeLatest("autoComplete/keyDown", updateAutoComplete);
+}
+
+function* updateAutoComplete(action) {
+  try {
+    const { results, timeout } = yield race({
+      results: call(getData, `${api}/cityNames/${action.payload.inputValue}`),
+      timeout: call(delay, 10000)
+    });
+
+    if (timeout) {
+      throw new Error("timed out after 10 seconds");
+    }
+
+    yield put({ type: "autoComplete/setNewValues", payload: results });
+  } catch (e) {
+    yield put({ type: "autoComplete/fetchFailed", e });
+  }
+}
+
+function* getData(url) {
+  const response = yield call(fetchData, url);
+  if (response.status === 200) {
+    const json = yield call([response, response.json]);
+    return json;
+  } else {
+    throw new Error("bad return code");
+  }
+}
+
+function* fetchData(url) {
+  const abortController = new AbortController();
+  try {
+    const result = yield call(fetch, url, { signal: abortController.signal });
+    return result;
+  } finally {
+    if (yield cancelled()) {
+      abortController.abort();
+    }
+  }
+}
+----
+*
+1
+5:7
+9:24
+26:34
+36:46
+*
+```
+
+---
 
 # Time for Questions & Discussion
 
