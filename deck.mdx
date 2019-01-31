@@ -1,4 +1,4 @@
-import { Head, Notes, Image, Appear, components as C } from "mdx-deck";
+import { Head, Notes, Image, Appear, components as C, Split } from "mdx-deck";
 import { CodeSurfer } from "mdx-deck-code-surfer";
 
 export { default as theme } from "./theme";
@@ -105,7 +105,7 @@ while (!nextValue.done) {
 ---
 
 ```typescript Asynchronous Behaviour: yield steps out of the Generator
-function* myFirstGenerator() {
+function* myGenerator() {
   console.log("generator started");
 
   console.log("yielding first value");
@@ -116,7 +116,7 @@ function* myFirstGenerator() {
 }
 
 let nextValue;
-const iterableObject = myFirstGenerator();
+const iterableObject = myGenerator();
 console.log("generator created");
 console.log("calling first next()");
 nextValue = iterableObject.next();
@@ -145,13 +145,163 @@ console.log("got third value", nextValue);
 
 ---
 
-```typescript Flow Control from the Caller: throwing an Exception into a Generator
+```typescript Flow Control from the Caller: passing values into a running Generator Function
+function* sumGenerator() {
+  let sum = 0;
+  while (true) {
+    const value = yield sum;
+    console.log("got passed", value);
+    sum += value;
+  }
+}
+
+const iterableObject = sumGenerator();
+for (const add of [1, 2, 3]) {
+  const returnedValue = iterableObject.next(add).value;
+  console.log("returned value is", returnedValue);
+}
 ```
 
 ---
 
-```typescript Flow Control from the Caller: forcing a Generator to return
+# The chicken-egg-problem of passing values in both directions
+
+If we pass in a value to be used before the first `yield` and at the same time use the `yield` keyword to access values passed in, we can never access the first value that is passed in.
+
+> ⇒ The first time `Iterator.prototype.next(value)` is called, the value goes straight to `/dev/null`!
+
+### Possile solutions:
+
+- **invert the problem**: call `next` once just to get the generator started, without using the return value.
+- **don't pass the first value to `next`**, but as an argument to the Generator Function call itself.
+
+### Both solutions require the user of your generator to use it accordingly, so write some documentation.
+
+---
+
+```typescript Example for the "inverted" solution
+function* sumGenerator() {
+  let sum = 0;
+  while (true) {
+    const value = yield sum;
+    console.log("got passed", value);
+    sum += value;
+  }
+}
+
+const iterableObject = sumGenerator();
+iterableObject.next();
+for (const add of [1, 2, 3]) {
+  const returnedValue = iterableObject.next(add).value;
+  console.log("returned value is", returnedValue);
+}
+----
+*
+10 > create the generator
+11 > start the generator
+2
+4[5:7] > yield 0;
+12 > const add = 1;
+13[4:9] > next(1);
+4[1:4] > got 1
+5 > conosle.log("got passed 1")
+6 > sum = 0 + 1;
+4[5:7] > yield 1;
+13[1:3,10:12] > { done: false, value: 1 }
+14 > console.log("returned value is", 1)
+12 > const add = 2; // et cetera
 ```
+
+---
+
+```typescript Example for the "function argument" solution
+function* sumGenerator(firstPassedValue) {
+  let sum = firstPassedValue;
+  while (true) {
+    const value = yield sum;
+    console.log("got passed", value);
+    sum += value;
+  }
+}
+
+const iterableObject = sumGenerator(1);
+for (const add of [undefined, 2, 3]) {
+  const returnedValue = iterableObject.next(add).value;
+  console.log("returned value is", returnedValue);
+}
+----
+*
+1[5],2,10[7],11[9] > ''
+```
+
+---
+
+```typescript Flow Control from the Caller: injecting an Error
+function* generateFib() {
+  let a = 0,
+    b = 1;
+  try {
+    while (true) {
+      yield a;
+      const _ = a + b;
+      a = b;
+      b = _;
+    }
+  } catch (e) {
+    console.log("guess I went too far.");
+  }
+}
+
+const iterableFib = generateFib();
+for (const fib of iterableFib) {
+  console.log(fib);
+  if (fib > 100) {
+    iterableFib.throw("stop this nonsense!");
+  }
+}
+```
+
+---
+
+```typescript Flow Control from the Caller: forcing to return
+function* generateFib() {
+  let a = 0,
+    b = 1;
+  try {
+    while (true) {
+      try {
+        yield a;
+      } catch (e) {
+        console.log("you will never stop me with", e);
+      }
+      const _ = a + b;
+      a = b;
+      b = _;
+    }
+  } finally {
+    console.log("oh, you got me nonetheless.");
+  }
+}
+
+const iterableFib = generateFib();
+for (const fib of iterableFib) {
+  console.log(fib);
+  iterableFib.throw("stop.");
+  if (fib > 100) {
+    iterableFib.return("stop this nonsense!");
+    // returns { done: true, value: "stop this nonsense!" }
+  }
+}
+```
+
+---
+
+# Some nuances we skipped over
+
+(you'll probably never ever need those)
+
+- you can also `return` from a Generator Function instead of `yield`ing <br/> (the next call to `next` will return `{done: true, value: 'your-return-value'}`)
+- you can override the return value that is forced by `myIterator.return("forced-return-value")` <br/> by returning something different in your `finally` block
 
 ---
 
