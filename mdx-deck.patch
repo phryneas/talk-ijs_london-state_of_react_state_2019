@@ -1,0 +1,12 @@
+--- a/node_modules/mdx-deck/lib/html.js	2019-02-05 16:25:51.767276678 +0100
++++ b/node_modules/mdx-deck/lib/html.js	2019-02-05 16:24:28.995664616 +0100
+@@ -34,7 +34,8 @@
+       whitelist: [
+         'mdx-deck',
+         'mdx-deck/themes',
+-        'mdx-deck/layouts'
++        'mdx-deck/layouts',
++        'mdx-deck-code-surfer'
+       ]
+     })
+   ]
