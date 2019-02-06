@@ -50,7 +50,6 @@ function* agenda() {
   <C.li>In love with the Web, Open Source, Linux and Security</C.li>
   <C.li>Just getting used to conference speaking, so bear with me</C.li>
 </C.ul>
-
 ---
 
 # Let's get to know Generators
@@ -71,17 +70,26 @@ const myGeneratorInstance = myFirstGenerator();
 6[5:7] > call like a function to get your Generator Object
 ```
 
+```notes
+some highlights
+```
+
 ---
 
 ```typescript Usage Basics: the for-of-loop
 function* myFirstGenerator() {
   yield "some-return-value";
   yield "another-return-value";
+  return "then-we-really-return";
 }
 
 for (const value of myFirstGenerator()) {
   console.log(value);
 }
+```
+
+```notes
+no steps
 ```
 
 ---
@@ -90,6 +98,7 @@ for (const value of myFirstGenerator()) {
 function* myFirstGenerator() {
   yield "some-return-value";
   yield "another-return-value";
+  return "then-we-really-return";
 }
 
 const iterableObject = myFirstGenerator();
@@ -102,46 +111,58 @@ while (!nextValue.done) {
 }
 ```
 
+```notes
+no steps
+```
+
 ---
 
 ```typescript Asynchronous Behaviour: yield steps out of the Generator
 function* myGenerator() {
   console.log("generator started");
+  yield "some-yielded-value";
 
-  console.log("yielding first value");
-  yield "some-return-value";
-  console.log("yielding second value");
-  yield "another-return-value";
-  console.log("generator ends");
+  console.log("continuing");
+  yield "another-yielded-value";
+
+  console.log("continuing");
+  return "then-we-really-return";
 }
 
 let nextValue;
 const iterableObject = myGenerator();
 console.log("generator created");
-console.log("calling first next()");
 nextValue = iterableObject.next();
-console.log("got first return value", nextValue);
-console.log("calling second next()");
+console.log("got first yielded value", nextValue);
 nextValue = iterableObject.next();
-console.log("got second return value", nextValue);
-console.log("calling third next()");
+console.log("got second yielded value", nextValue);
 nextValue = iterableObject.next();
 console.log("got third value", nextValue);
 ----
 *
-12 > // calling myFirstGenerator()
-13 > generator created
-14,15 > calling first next()
+13[4:7] > // calling myGenerator()
+14 > generator created
+15[2:6] > // calling first next()
 2 > generator started
-4,5 > yielding first value
-16 > got first return value { done: false, value: "yielding first value" }
-17,18 > got second next()
-6,7 > yielding second value
-19 > got second return value { done: false, value: "yielding second value" }
-20,21 > calling third next()
-8 > generator ends
-22 > got third value { done: true, value: undefined }
+3 > // yielding first value
+16 > got first yielded value { done: false, value: "some-yielded-value" }
+17[2:6] > // calling second next()
+5 > continuing
+6 > // yielding second value
+18 > got second return value { done: false, value: "another-yielded-value" }
+19[2:6] > // calling third next()
+8 > continuing
+9 > // returning a value
+20 > got third value { done: true, value: "then-we-really-return" }
 ```
+
+```notes
+steps through
+```
+
+---
+
+# Flow Control from the Caller
 
 ---
 
@@ -162,15 +183,23 @@ for (const add of [1, 2, 3]) {
 }
 ```
 
+```notes
+no steps
+```
+
 ---
 
-# The chicken-egg-problem of passing values in both directions
+## The chicken-egg-problem of passing values in both directions
 
 If we pass in a value to be used before the first `yield` and at the same time use the `yield` keyword to access values passed in, we can never access the first value that is passed in.
 
-> ⇒ The first time `Iterator.prototype.next(value)` is called, the value goes straight to `/dev/null`!
+> ⇒ The first time you call
+> `Iterator.prototype.next(value)`  
+>  `value` goes straight to `/dev/null`!
 
-### Possile solutions:
+---
+
+## Possile solutions:
 
 - **invert the problem**: call `next` once just to get the generator started, without using the return value.
 - **don't pass the first value to `next`**, but as an argument to the Generator Function call itself.
@@ -212,6 +241,10 @@ for (const add of [1, 2, 3]) {
 12 > const add = 2; // et cetera
 ```
 
+```notes
+has steps
+```
+
 ---
 
 ```typescript Example for the "function argument" solution
@@ -232,6 +265,10 @@ for (const add of [undefined, 2, 3]) {
 ----
 *
 1[5],2,10[7],11[9] > ''
+```
+
+```notes
+just highlights differences
 ```
 
 ---
@@ -259,6 +296,10 @@ for (const fib of iterableFib) {
     iterableFib.throw("stop this nonsense!");
   }
 }
+```
+
+```notes
+no steps
 ```
 
 ---
@@ -294,12 +335,16 @@ for (const fib of iterableFib) {
 }
 ```
 
+```notes
+no steps
+```
+
 ---
 
-# Some nuances we skipped over
+## As a sidenote
 
-- you can also `return` from a Generator Function instead of `yield`ing <br/> (the next call to `next` will return `{done: true, value: 'your-return-value'}`)
 - you can override the return value that is forced by `myIterator.return("forced-return-value")` <br/> by returning something different in your `finally` block
+- with `yield*`, you can delegate to another generator (stuff like "throw" will control the inner generator until it is done!)
 
 ---
 
@@ -329,6 +374,11 @@ async function fetchMovieTitles() {
   return json.map(movie => movie.title);
 }
 const movieTitlePromise = fetchMovieTitles();
+```
+
+```notes
+no steps
+iterative
 ```
 
 ---
@@ -376,6 +426,11 @@ function runAsync(generator) {
 18:29
 ```
 
+```notes
+highlight parts
+orchestrating function
+```
+
 ---
 
 # Let's look at real-world use cases
@@ -394,6 +449,10 @@ function runAsync(generator) {
 - can "clean up" after themselves if they are cancelled
 
 #### Note: Sagas are available for many different platforms, we will look at redux-saga here
+
+```notes
+effects are commands to the orchestrator
+```
 
 ---
 
@@ -452,6 +511,10 @@ function* fetchData(url) {
 26:34
 36:46
 *
+```
+
+```notes
+highlight parts
 ```
 
 ---
