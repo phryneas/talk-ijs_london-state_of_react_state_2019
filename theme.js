@@ -1,8 +1,4 @@
-import theme from "mdx-deck/themes";
-import codeSurferTheme from "prism-react-renderer/themes/duotoneLight";
-
 export default {
-  ...theme,
   font: '"Source Sans Pro", "Open Sans", Helvetica, Arial',
   colors: {
     text: "#707372",
@@ -10,8 +6,9 @@ export default {
     background: `transparent`,
     link: "f000"
   },
-  codeSurfer: {
-    ...codeSurferTheme,
-    showNumbers: true
+  Slide: {
+    background: `white url('${require("file-loader!./assets/iJS_London_2018_Template_1920x1080_49699_v1b.webp")}') no-repeat fixed center`,
+    backgroundSize: "cover",
+    paddingBottom: "8%"
   }
 };
