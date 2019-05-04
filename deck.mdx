@@ -3,9 +3,20 @@ import { CodeSurfer } from "mdx-deck-code-surfer";
 
 export { default as theme } from "./theme";
 export { components } from "mdx-deck-code-surfer";
+const background = require("file-loader!./assets/iJS_London_2018_Template_1920x1080_49699_v1b.png");
+const introSlide = require("file-loader!./assets/iJS_London_2018_Template_1920x1080_49699_v1a.png");
 
 <Head>
   <title>Async Generators</title>
+  <style>
+    {`
+    body {
+      background: white url('${background}') no-repeat fixed center;
+      background-size: cover;
+    }
+    `}
+
+  </style>
 </Head>
 
 # JavaScript Generators

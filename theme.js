@@ -7,7 +7,7 @@ export default {
   colors: {
     text: "#707372",
     heading: "#e35205",
-    background: "#fff",
+    background: `transparent`,
     link: "f000"
   },
   codeSurfer: {
