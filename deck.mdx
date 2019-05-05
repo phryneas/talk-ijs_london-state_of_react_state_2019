@@ -1,7 +1,9 @@
-import { Head, Notes, Image, Appear, Split, Slide } from "mdx-deck";
+import { Head, Notes, Image, Appear, Slide } from "@mdx-deck/components";
+import { Split } from "@mdx-deck/layouts";
 
 import { default as theme } from "./theme";
 import highlight from "@mdx-deck/themes/syntax-highlighter-prism";
+import { Fragment } from "react";
 
 export const themes = [theme, highlight];
 
@@ -38,6 +40,442 @@ export const themes = [theme, highlight];
 </ul>
 
 ---
+
+# Why this Talk?
+
+<Appear>
+  <blockquote>
+    “Here's just how to use Redux”
+    <cite>80% of all tutorials on React state management</cite>
+  </blockquote>
+  <blockquote>
+    “I hope that with the new context API less people will use Redux because
+    they need a global subscription mechanism, and more because they actually
+    need Redux.”
+    <cite>
+      <a href="https://twitter.com/dan_abramov/status/958070783473045504">
+        Dan Abramov on Twitter
+      </a>
+    </cite>
+  </blockquote>
+  <blockquote>
+    “Redux is dead!”
+    <cite>too many blogposts</cite>
+  </blockquote>
+  <blockquote>
+    “I just use MobX, it's much more simple”
+    <cite>random person on reddit</cite>
+  </blockquote>
+  <blockquote>
+    “Let's just use graphql for everything”
+    <cite>the Hypetrain</cite>
+  </blockquote>
+  <blockquote>
+    “I feel like I should make a workshop: "How to migrate from redux to
+    useReducer/useContext" [...]
+    <cite>
+      <a href="https://twitter.com/kentcdodds/status/1118248491510222848">
+        Kent C Dodds on Twitter
+      </a>
+    </cite>
+  </blockquote>
+  <blockquote>
+    “Add hooks!”
+    <cite>the Hypetrain</cite>
+  </blockquote>
+
+<h2>This is confusing!</h2>
+
+</Appear>
+
+---
+
+# A brief warning:
+
+## This talk might already be outdated...
+
+Especially third-party-library hooks APIs mentioned in this talk are all alpha and subject to change (and they do!)
+
+---
+
+# We need to look at:
+
+- Different types of State in React Apps
+- Common options for State management
+- What kind of management to use for what kind of state
+
+---
+
+# Different types of State in React Apps
+
+- configuration (language, theme etc.)
+- login/user information
+- input/form State
+- UI State (toggles etc.)
+- API Cache
+- calculated values
+
+---
+
+# But first...
+
+## What do we look at - and Why?
+
+---
+
+# State Types
+
+<Split>
+
+## What
+
+## Why
+
+</Split>
+
+<Split>
+<Fragment>
+
+- global
+- semi-global
+- semi-local
+- local
+
+</Fragment>
+
+<Fragment>
+
+- more global state
+  - easy to see application state at once glance
+  - difficult to attribute accountability
+  - might trigger re-rendering of a lot of Components
+- more local state
+  - difficult to get "the big picture"
+  - clear responsibilites
+
+</Fragment>
+
+</Split>
+
+<Notes>
+
+- _global_: the whole application depends on it
+- _semi-global_: large parts of the application depend on it
+- _semi-local_: one small component tree depends on it
+- _local_: only one component depends on it
+
+big picture:
+
+- no time travel etc
+
+accountability:
+
+- what triggers state changes
+- which team is responsible
+
+</Notes>
+
+---
+
+# How often does a State change
+
+## Why
+
+State that impacts a lot of Components AND changes often might lead to performance problems.
+
+---
+
+# How is it initialized
+
+<Split>
+
+## What
+
+## Why
+
+</Split>
+
+<Split>
+
+<Fragment>
+
+- no initialization
+- default values
+- values from storage
+- values from asynconous sources
+- derived when it is first required
+
+</Fragment>
+
+<Fragment>
+
+Sometimes State initialization should be triggered before the App starts rendering. This might affect your choice of state management solution.
+
+</Fragment>
+
+</Split>
+
+---
+
+# How State updates are triggered
+
+<Split>
+
+## What
+
+## Why
+
+</Split>
+
+<Split>
+
+<Fragment>
+
+- Application Lifecycle
+- Component Lifecycle
+- User Interaction
+
+* synchronously or asynchronously
+
+</Fragment>
+
+<Fragment>
+
+This might impact your choice of State management.
+
+</Fragment>
+
+</Split>
+
+---
+
+# Configuration (language, theme etc.)
+
+- affects almost all of your Components
+- this is _true global state_
+- changes _rarely_
+- usually initialized _from storage_
+- changes are triggered _from somewhere in the Component tree_
+
+---
+
+# User authentication State
+
+- used in some Components, in different parts of your applications
+- most likely, you even use this state outside of React
+- this is _true global state_
+- changes _rarely_
+- usually initialized _from storage_
+- changes are triggered _asynchronously_ through user interaction
+
+---
+
+# Input or form State
+
+- contains:
+  - user input
+  - validation results
+- while the form is displayed: _local state_
+- final results of the user input might become relevant outside of this form
+  - in that case, the result later becomes _global_ or _semi-global_
+- changes _often_
+- usually initialized with _default values_
+- changes are triggered from a _close component_
+
+---
+
+# UI State (toggles etc.)
+
+- usually _local state_
+- if you want to keep some UI state while the component is not mounted, this becomes _semi-global_
+- if a component might be rendered twice at the same time, this is definitely _local state_
+  - in that case, storing it in a _semi-global_ fashion might require you to track _component state identity_
+- usually initialized with _default values_
+- changes are triggered from a _close component_
+
+---
+
+# API cache
+
+- can be _global_ or _local_
+- can contain denormalized or normalized values
+- usually initialized _empty_
+- changes are triggered _asynchronously_, with or without user interaction
+- should get _invalidated_
+
+---
+
+# Calculated values
+
+- derived values
+- can always be recomputed using other values known to the Component
+- only kept because computation is expensive
+- usually _local_, sometimes _global_
+
+---
+
+# Let's get the elephant out of the room: Cache state
+
+## If you use GraphQL
+
+you won't have to worry about Cache
+
+---
+
+# Let's get the elephant out of the room: Cache state
+
+## If you **don't** use GraphQL
+
+- if you can keep your Cache for a part of your API local, this might be worth a try
+  - Cache invalidation takes place as the component holding state is unmounted
+- but as soon as two Components in different subtrees need access to the same API, you have to go global state or risk going out of sync
+- there is no good library I know of to handle this in the REST world - you'll have to do your own and handle it like all your other global State
+- this talk will not cover more on Cache State
+
+---
+
+# And something else... Form State
+
+- managing Form state is not very much fun... there are good libraries for that!
+- take a look at Formik or React-Final-Form for example
+
+---
+
+# What are we left with?
+
+- highly depends on your applications
+- but usually: not very much real global state, some semi-global state and a lot of local or semi-local state
+- let's see how to approach such a scenario
+
+---
+
+# How far can we get with React alone?
+
+From now on, we're in hooks territory
+
+---
+
+# use local state
+
+---
+
+# "cheat mode": useReducer
+
+---
+
+# Keeping state twice? Lift state up to a close component!
+
+---
+
+# keep in mind that you can compose purely representational components with the `children` prop without having to pass everything to every single one of them
+
+---
+
+# Context: lift state up to a not-so-close component
+
+---
+
+# limitation: big states need to be subscribed to
+
+---
+
+# limitation: splitting up many states means many contexts
+
+---
+
+# limitation: adding more states later on is not possible without invalidating the whole tree
+
+---
+
+# limitation: asynchronity and "getting the current state" => no middlewares like in redux
+
+---
+
+## Let someone else think about all that...?
+
+# Using a library
+
+---
+
+# MobX
+
+- state objects are _obserables_
+- components are _observers_ by using the `@observer` annotation or the `useObserver` hook
+- has _computed values_: lazily evaluated derived values
+
+---
+
+# MobX
+
+`example code`
+
+---
+
+# MobX
+
+- very un-opinionated: either modify state objects directly or use the safer "enforce actions" mode
+- data-flow can be very un-react-like when a component far down the tree just modifies state shared with a component far up in the tree
+  - this is in line with the mission of MobX: "to make React more reactive"
+- asynconous actions can be handled in _reactions_
+- any number of small MobX stores can co-exist in one application
+- can also be used for local State with the `useLocalStore` hook (or just observable class properties)
+
+---
+
+# MobX-State-Tree
+
+- builds on MobX
+- very opinionetd
+- requires definition of typesafe models (checked at runtime)
+- per default, "enforced actions" mode is on, rejecting direct updates to the tree
+- computed values usually in a direct _view_ on your model
+- models have a _lifecycle_
+- allows for use of action listeners and middlewares
+
+---
+
+# Redux
+
+- unidirectional data-flow:
+  - components _dispatch_ actions.
+  - dispatched actions are passed together with the last state into a _reducer_ function to generate the new state
+  - state should never be mutated, but always be created as a mutated copy
+- _middleware_ can hook between dispatch and reducer to block actions and/or execute side-effects and dispatch further actions
+- components are either _connected_ to the state using a HOC or use the _useSelector_ and _useDispatch_ hooks
+- usually one Redux state per application
+
+---
+
+# Redux-Starter-Kit
+
+- the new _redux-starter-kit_ package greatly reduces the amount of boilerplate and complexity of writing reducers
+
+---
+
+# Client-side State in Apollo-Client
+
+- stores State in the Apollo Cache
+- can be subscribed using GraphQL queries and the `@client` directive
+- State modification by
+  - either directly modifying the Cache
+  - creating local Mutation resolvers (that modify the Cache)
+- everything in Apollo-Client is normalized
+  - so you will have many State types with only one instance and `id: 1`
+- writing local Mutation resolvers feels a bit clunky
+- no middlewares or other "best practice" to do asynchronous modifications
+  - but of course you can always just write Mutations that mofify the Cache asynchronously
+
+---
+
+# So, what should _you_ use?
+
+<Appear>
+
+## Whatever works for you.
+
+\*
+
+</Appear>
 
 ---
 
