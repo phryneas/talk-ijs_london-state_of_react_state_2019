@@ -29,6 +29,7 @@ export default {
     paddingLeft: "1em",
     borderLeft: "0.2em solid darkgray",
     "&>cite": {
+      marginLeft: "2em",
       display: "block",
       fontSize: "0.7em",
       fontStyle: "italic",

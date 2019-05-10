@@ -18,7 +18,7 @@
   "license": "MIT",
   "devDependencies": {
     "mdx-deck": "^2.3.2",
-    "raw-loader": "^1.0.0",
+    "raw-loader": "^2.0.0",
     "react-dom": "^16.8.6",
     "source-map-loader": "^0.2.4"
   },
