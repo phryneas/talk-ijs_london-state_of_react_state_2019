@@ -1,0 +1,26 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type User {
+  username: String!
+  role: String!
+}
+
+type LoginState {
+  user: User
+  error: String
+  initialized: Boolean!
+  loading: Boolean!
+  loggedIn: Boolean!
+}
+
+type Query {
+  loginState: LoginState!
+}
+
+type Mutation {
+  login(username: String!, password: String!): ID
+  logout: ID
+}
