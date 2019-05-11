@@ -1,38 +1,24 @@
+# On the State of React's State
 
-# mdx-deck basic template
+## in May 2019, iJS London
 
-This was generated with [mdx-deck][]'s `npm init deck` command.
+### Slides
 
-## Development
+[The slides are available here](https://phryneas.github.io/talk-ijs_london-state_of_react_state_2019)
 
-To run the presentation deck in development mode:
+### Code Examples
 
-```sh
-npm start
-```
+- [React-only Code Examples](https://github.com/phryneas/talk-ijs_london-state_of_react_state_2019/tree/example/only-react)
+  -> [Codesandbox](https://codesandbox.io/s/github/phryneas/talk-ijs_london-state_of_react_state_2019/tree/example/only-react)
 
-Edit the [`deck.mdx`](deck.mdx) file to get started.
+- [MobX Code Examples](https://github.com/phryneas/talk-ijs_london-state_of_react_state_2019/tree/example/mobx)
 
-## Exporting
+- [MobX-State-Tree Code Examples](https://github.com/phryneas/talk-ijs_london-state_of_react_state_2019/tree/example/mobx-state-tree)
 
-To build the presentation deck as static HTML:
+- [Redux Code Examples](https://github.com/phryneas/talk-ijs_london-state_of_react_state_2019/tree/example/redux)
+  -> [Codesandbox](https://codesandbox.io/s/github/phryneas/talk-ijs_london-state_of_react_state_2019/tree/example/redux)
 
-```sh
-npm run build
-```
+- [Apollo-Client Code Examples](https://github.com/phryneas/talk-ijs_london-state_of_react_state_2019/tree/example/apollo-client)
+  -> [Codesandbox](https://codesandbox.io/s/github/phryneas/talk-ijs_london-state_of_react_state_2019/tree/example/apollo-client)
 
-To export a PDF:
-
-```sh
-npm run pdf
-```
-
-To export an image of the title slide:
-
-```sh
-npm run image
-```
-
-For more documentation see the [mdx-deck][] repo.
-
-[mdx-deck]: https://github.com/jxnblk/mdx-deck
+For the MobX-Examples, there's no working CodeSandbox - sorry! If you get this working, a PR is very appreciated.
