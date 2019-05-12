@@ -12,7 +12,7 @@ export const themes = [theme, highlight];
 </Head>
 
 <Image
-  src={require("file-loader!./assets/iJS_London_2018_Template_1920x1080_49699_v1a.webp")}
+  src={require("!!file-loader!./assets/iJS_London_2018_Template_1920x1080_49699_v1a.webp")}
   style={{ position: "absolute", top: 0, left: 0 }}
 />
 
@@ -27,14 +27,13 @@ export const themes = [theme, highlight];
   <li>
     Developer at
     <img
-      src="./assets/mayflower_logo_transparent.png"
+      src={require("!!file-loader!./assets/mayflower_logo_transparent.png")}
       lang="typescript"
       style={{
-        height: "1.3em",
+        height: "1.4em",
         verticalAlign: "bottom",
         position: "relative",
-        top: "5px",
-        left: "-5px"
+        top: "2px"
       }}
     />
   </li>
@@ -106,14 +105,14 @@ Especially third-party-library hooks APIs mentioned in this talk are all alpha a
 
 - Different types of State in React Apps
 - Common options for State management
-- What kind of management to use for what kind of state
+- So what should **you** use then?
 
 ---
 
 # Different types of State in React Apps
 
 - configuration (language, theme etc.)
-- login/user information
+- authentication/user information
 - input/form State
 - UI State (toggles etc.)
 - API Cache
@@ -364,7 +363,10 @@ you won't have to worry about Cache
 From now on, we're in hooks & demo territory
 
 <a href="https://github.com/phryneas/talk-ijs_london-state_of_react_state_2019">
-  <img src="./assets/qr-code.svg" style={{ width: "50vh", height: "50vh" }} />
+  <img
+    src={require("!!file-loader!./assets/qr-code.svg")}
+    style={{ width: "50vh", height: "50vh" }}
+  />
 </a>
 
 ---
@@ -433,7 +435,7 @@ While performing an asynchronous action, there's no way to get the _current stat
 - components are _observers_ by using the **@observer** annotation or the **useObserver** hook
 - has _computed values_: lazily evaluated derived values
 - _asynconous actions_ can be handled in with **flow**
-- any number of small MobX stores can co-exist in one application and easily passed down with **Provider** and **inject**
+- any number of small MobX stores can co-exist in one application and be easily passed down with **Provider** and **inject**
 - can use _reactions_ for side effects
 
 ---
@@ -443,7 +445,7 @@ While performing an asynchronous action, there's no way to get the _current stat
 - very un-opinionated: either modify state objects directly or use the safer "enforce actions" mode
 - data-flow can be very un-react-like as it breaks top-down dataflow
   - this is in line with the mission of MobX: "to make React more reactive"
-- can also be used for local State with the `useLocalStore` hook (or just observable class properties)
+- can also be used for local State with the **useLocalStore** hook (or just observable class properties)
 
 ---
 
@@ -496,13 +498,17 @@ While performing an asynchronous action, there's no way to get the _current stat
 
 # Client-side State in Apollo-Client
 
+---
+
+# Client-side State in Apollo-Client
+
 - stores State in the Apollo Cache
-- can be subscribed using GraphQL queries and the `@client` directive
+- can be subscribed using GraphQL queries and the **@client** directive
 - State modification by
   - either directly modifying the Cache
   - creating local Mutation resolvers (that modify the Cache)
 - everything in Apollo-Client is normalized
-  - so you will have many State types with only one instance and `id: 1`
+  - so you will have many State types with only one instance and **id: 1**
 - writing local Mutation resolvers feels a bit clunky
 - no middlewares
   - but asynchronous Mutation/Query resolvers are allowed

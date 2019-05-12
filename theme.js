@@ -7,7 +7,7 @@ export default {
     link: "f000"
   },
   Slide: {
-    backgroundImage: `url('${require("file-loader!./assets/iJS_London_2018_Template_1920x1080_49699_v1b.webp")}')`,
+    backgroundImage: `url('${require("!!file-loader!./assets/iJS_London_2018_Template_1920x1080_49699_v1b.webp")}')`,
     backgroundPositionX: "center",
     backgroundPositionY: "bottom",
     backgroundSize: "100%",

@@ -4,13 +4,12 @@
   "description": "Deck created with mdx-deck",
   "scripts": {
     "start": "mdx-deck deck.mdx",
-    "build": "mdx-deck build deck.mdx",
-    "copy-assets": "mkdir -p dist; cp -r assets dist",
+    "build": "mdx-deck build --basepath '/talk-ijs_london-state_of_react_state_2019' deck.mdx",
     "pdf": "mdx-deck pdf deck.mdx",
     "image": "mdx-deck screenshot deck.mdx",
     "help": "mdx-deck",
     "clean": "rimraf dist",
-    "dist": "yarn clean && yarn build && yarn copy-assets && gh-pages -d dist",
+    "dist": "yarn clean && yarn build && gh-pages -d dist",
     "postinstall": "#patch -Nu -r /dev/null -p1 -i mdx-deck.patch || true"
   },
   "keywords": [],
