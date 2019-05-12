@@ -10,7 +10,6 @@ import {
 import { App } from "./App";
 
 const client = new ApolloClient({
-  connectToDevTools: true,
   uri: "http://localhost:4000/graphql",
   resolvers: {
     Mutation: {

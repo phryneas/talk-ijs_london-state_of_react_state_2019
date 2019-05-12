@@ -23,8 +23,7 @@ function useLogin() {
       mutation login($username: String!, $password: String!) {
         login(username: $username, password: $password) @client
       }
-    `,
-    { refetchQueries: ["getLoginState"] }
+    `
   );
 
   const logout = useMutation(gql`
@@ -46,8 +45,7 @@ function useLogin() {
     loggedIn: !!data.loginState.user,
     user: data.loginState.user,
     error: data.loginState.error,
-    login: (username, password) =>
-      login({ variables: { username, password } }).then(() => refetch()),
+    login: (username, password) => login({ variables: { username, password } }),
     logout
   };
 }
