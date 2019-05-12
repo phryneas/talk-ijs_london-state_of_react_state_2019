@@ -14,8 +14,8 @@
     "postinstall": "#patch -Nu -r /dev/null -p1 -i mdx-deck.patch || true"
   },
   "keywords": [],
-  "author": "Brent Jackson",
-  "license": "MIT",
+  "author": "Lenz Weber",
+  "license": "ask please",
   "devDependencies": {
     "mdx-deck": "^2.3.2",
     "raw-loader": "^2.0.0",
