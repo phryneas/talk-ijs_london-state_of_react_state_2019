@@ -73,16 +73,15 @@ client.writeData({
 });
 
 simulateLoadingUserFromLocalStorage().then(user => {
-  const data = {
-    loginState: {
-      __typename: "LoginState",
-      id: 0,
-      initialized: true,
-      user: user || null
-    }
-  };
   client.writeData({
-    data
+    data: {
+      loginState: {
+        __typename: "LoginState",
+        id: 0,
+        initialized: true,
+        user: user || null
+      }
+    }
   });
 });
 

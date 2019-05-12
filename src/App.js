@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "react-apollo-hooks";
 import { gql } from "apollo-boost";
 
 function useLogin() {
-  const { data, refetch } = useQuery(gql`
+  const { data } = useQuery(gql`
     query getLoginState {
       loginState @client {
         user {

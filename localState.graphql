@@ -12,8 +12,6 @@ type LoginState {
   user: User
   error: String
   initialized: Boolean!
-  loading: Boolean!
-  loggedIn: Boolean!
 }
 
 type Query {
