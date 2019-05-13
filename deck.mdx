@@ -143,7 +143,6 @@ Especially third-party-library hooks APIs mentioned in this talk are all alpha a
   - might trigger re-rendering of a lot of Components
 - more local state
   - difficult to get "the big picture"
-  - clear responsibilites
 
 </Fragment>
 
@@ -507,20 +506,19 @@ While performing an asynchronous action, there's no way to get the _current stat
 # A word on testing
 
 - if possible, move everything out into a **useStateForThisComponent** hook
-- you can inject this as a prop default value into your component and easily mock it away in your tests
+- you can inject this as a prop default value into your component for easy mocking
 
 ```
-function useStateForThisComponentOriginal(){ /*...*/ }
+function useMyStateImpl(){ /*...*/ }
 
-function MyComponent({useStateForThisComponent = useStateForThisComponentOriginal}) {
-  const { /*...*/ } = useStateForThisComponent();
+function MyComponent({useMyState = useMyStateImpl}) {
+  const { /*...*/ } = useMyState();
 }
 ```
 
 - but keep in mind: only mock away state that comes from higher up in the tree
   - do not mock local state modifications done by your Component
   - ➡️ **test behaviour, not implementation!**
-- as a side effect, that even allows you to change your State management solution without even touching your Components 🙃
 
 ---
 
