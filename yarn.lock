@@ -2,6 +2,23 @@
 # yarn lockfile v1
 
 
+"@apollo/react-common@^0.1.0-beta.1":
+  version "0.1.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@apollo/react-common/-/react-common-0.1.0-beta.1.tgz#d3f8662d0c45a20d4e71133c51c5dcff0ed5ff47"
+  integrity sha512-loo1F2p2nu7Z+cO7ZjjOXM9u+JRbrSoQi6LDcp5VBvohBynjyH/Ic1v837yMf6HkrKroB2AiidrlYMWcrpMgeg==
+  dependencies:
+    ts-invariant "^0.4.0"
+    tslib "^1.9.3"
+
+"@apollo/react-hooks@^0.1.0-beta.2":
+  version "0.1.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@apollo/react-hooks/-/react-hooks-0.1.0-beta.2.tgz#14c168781136f646bed6e9d2a0dc8f1f3fc4553e"
+  integrity sha512-QWSVQXTXGBI9lDCZ2XNzuz9M6p9qI5ZljmBOGzfdH7DwKWxkpL07XQfyzBfzr6cbxl/BECbDD+/4m5468HSLVg==
+  dependencies:
+    "@apollo/react-common" "^0.1.0-beta.1"
+    ts-invariant "^0.4.0"
+    tslib "^1.9.3"
+
 "@babel/code-frame@7.0.0", "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.0.0-beta.35":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.0.0.tgz#06e2ab19bdb535385559aabb5ba59729482800f8"
@@ -8086,13 +8103,6 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-apollo-hooks@^0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/react-apollo-hooks/-/react-apollo-hooks-0.4.5.tgz#7fe6a8ddfdc92df2da664d399ea77a0da4a10bad"
-  integrity sha512-fq04h88hg4ONtlzxYInmv7Okqqstzk3UCp55jHWOlIO2lFKoZPhQrtCz7A+TrcRu8GGwtG1SsioRKN8kIQaAOQ==
-  dependencies:
-    lodash "^4.17.11"
-
 react-app-polyfill@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/react-app-polyfill/-/react-app-polyfill-0.2.2.tgz#a903b61a8bfd9c5e5f16fc63bebe44d6922a44fb"
@@ -9546,6 +9556,13 @@ ts-invariant@^0.3.2:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/ts-invariant/-/ts-invariant-0.3.3.tgz#b5742b1885ecf9e29c31a750307480f045ec0b16"
   integrity sha512-UReOKsrJFGC9tUblgSRWo+BsVNbEd77Cl6WiV/XpMlkifXwNIJbknViCucHvVZkXSC/mcWeRnIGdY7uprcwvdQ==
+  dependencies:
+    tslib "^1.9.3"
+
+ts-invariant@^0.4.0:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/ts-invariant/-/ts-invariant-0.4.2.tgz#8685131b8083e67c66d602540e78763408be9113"
+  integrity sha512-PTAAn8lJPEdRBJJEs4ig6MVZWfO12yrFzV7YaPslmyhG7+4MA279y4BXT3f72gXeVl0mC1aAWq2rMX4eKTWU/Q==
   dependencies:
     tslib "^1.9.3"
 

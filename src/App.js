@@ -1,7 +1,7 @@
 import React from "react";
 import { LoginForm } from "./LoginForm";
 
-import { useQuery, useMutation } from "react-apollo-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
 function useLogin() {
@@ -18,7 +18,7 @@ function useLogin() {
     }
   `);
 
-  const login = useMutation(
+  const [login] = useMutation(
     gql`
       mutation login($username: String!, $password: String!) {
         login(username: $username, password: $password) @client
@@ -26,7 +26,7 @@ function useLogin() {
     `
   );
 
-  const logout = useMutation(gql`
+  const [logout] = useMutation(gql`
     mutation logout {
       logout @client
     }
@@ -40,6 +40,7 @@ function useLogin() {
       error: null
     };
   }
+  console.log(login);
   return {
     loading: !data.loginState.initialized,
     loggedIn: !!data.loginState.user,
